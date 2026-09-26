@@ -1,0 +1,65 @@
+[
+  {
+    "expected": "qwen",
+    "model": "qwen/qwen3-8b",
+    "verdict": "unknown",
+    "top": "qwen",
+    "confidence": 0.5448673911645312,
+    "hit": true,
+    "calls": 16
+  },
+  {
+    "expected": "deepseek",
+    "model": "deepseek/deepseek-chat",
+    "verdict": "unknown",
+    "top": "deepseek",
+    "confidence": 0.4661176580398323,
+    "hit": true,
+    "calls": 16
+  },
+  {
+    "expected": "kimi",
+    "model": "moonshotai/kimi-k2",
+    "verdict": "unknown",
+    "top": "deepseek",
+    "confidence": 0.20454258217713883,
+    "hit": false,
+    "calls": 16
+  },
+  {
+    "expected": "glm",
+    "model": "z-ai/glm-4.5",
+    "verdict": "unknown",
+    "top": "glm",
+    "confidence": 0.30445190439202535,
+    "hit": true,
+    "calls": 16
+  },
+  {
+    "expected": "mimo",
+    "model": "xiaomi/mimo-v2.5",
+    "verdict": "unknown",
+    "top": "qwen",
+    "confidence": 0.14285714285714285,
+    "hit": false,
+    "calls": 16
+  },
+  {
+    "expected": "step",
+    "model": "stepfun/step-3.5-flash",
+    "verdict": "unknown",
+    "top": "step",
+    "confidence": 0.5015903427767282,
+    "hit": true,
+    "calls": 16
+  },
+  {
+    "expected": "minimax",
+    "model": "minimax/minimax-m1",
+    "verdict": "unknown",
+    "top": "minimax",
+    "confidence": 0.6498705140570693,
+    "hit": true,
+    "calls": 16
+  }
+]

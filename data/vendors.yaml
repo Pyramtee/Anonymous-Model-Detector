@@ -1,0 +1,81 @@
+# Known tokenizer families for Chinese open-source vendors.
+# hf_repos: HuggingFace repo IDs used to fetch tokenizer.json (first available wins).
+# models: model name patterns that share this tokenizer family.
+families:
+  qwen:
+    display: Qwen
+    vendor: Alibaba
+    hf_repos:
+      - Qwen/Qwen3-8B
+      - Qwen/Qwen2.5-7B-Instruct
+    models:
+      - Qwen2.5-*
+      - Qwen3-*
+      - Qwen3-Coder-*
+
+  deepseek:
+    display: DeepSeek
+    vendor: DeepSeek
+    hf_repos:
+      - deepseek-ai/DeepSeek-V3-0324
+      - deepseek-ai/DeepSeek-R1-0528
+    models:
+      - DeepSeek-V3*
+      - DeepSeek-R1*
+      - DeepSeek-V4*
+
+  kimi:
+    display: Kimi
+    vendor: Moonshot
+    # Custom tokenizer: tiktoken.model + tokenization_kimi.py (no tokenizer.json).
+    # fetch will convert via tiktoken.model when possible.
+    hf_repos:
+      - moonshotai/Kimi-K2-Instruct-0905
+      - moonshotai/Kimi-K2-Instruct
+    models:
+      - Kimi-K2*
+      - moonshotai/Kimi-*
+      - kimi-*
+
+  glm:
+    display: GLM
+    vendor: Zhipu
+    hf_repos:
+      - zai-org/GLM-4.5
+      - zai-org/GLM-4.5-Air
+    models:
+      - GLM-4*
+      - GLM-5*
+      - zai-org/GLM-*
+
+  mimo:
+    display: MiMo
+    vendor: Xiaomi
+    hf_repos:
+      - XiaomiMiMo/MiMo-V2.5
+    models:
+      - MiMo*
+      - XiaomiMiMo/*
+    # Note: probe fingerprints match qwen (same tokenizer behavior)
+
+  step:
+    display: Step
+    vendor: StepFun
+    hf_repos:
+      - stepfun-ai/Step3
+      - stepfun-ai/step3-fp8
+      - stepfun-ai/Step3-VL-10B
+    models:
+      - Step*
+      - stepfun/*
+    # Note: probe fingerprints match deepseek (same tokenizer behavior)
+
+  minimax:
+    display: MiniMax
+    vendor: MiniMax
+    hf_repos:
+      - MiniMaxAI/MiniMax-M1-80k-hf
+      - MiniMaxAI/MiniMax-Text-01
+    models:
+      - MiniMax-*
+      - minimax/*

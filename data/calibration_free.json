@@ -1,0 +1,27 @@
+[
+  {
+    "expected": "qwen",
+    "model": "qwen/qwen3.8-27b:free",
+    "error": "chat failed after retries: rate limited: {\"error\":{\"message\":\"Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day\",\"code\":429,\"metadata\":{\"headers\":{\"X-RateLimit-Limit\":\"50\",\"X-RateLimit-Remain"
+  },
+  {
+    "expected": null,
+    "model": "google/gemma-4-31b-it:free",
+    "error": "chat failed after retries: rate limited: {\"error\":{\"message\":\"Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day\",\"code\":429,\"metadata\":{\"headers\":{\"X-RateLimit-Limit\":\"50\",\"X-RateLimit-Remain"
+  },
+  {
+    "expected": null,
+    "model": "nvidia/nemotron-3-super-120b-a12b:free",
+    "error": "chat failed after retries: rate limited: {\"error\":{\"message\":\"Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day\",\"code\":429,\"metadata\":{\"headers\":{\"X-RateLimit-Limit\":\"50\",\"X-RateLimit-Remain"
+  },
+  {
+    "expected": null,
+    "model": "inclusionai/ling-3.0-flash-sante:free",
+    "error": "chat failed after retries: rate limited: {\"error\":{\"message\":\"Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day\",\"code\":429,\"metadata\":{\"headers\":{\"X-RateLimit-Limit\":\"50\",\"X-RateLimit-Remain"
+  },
+  {
+    "expected": null,
+    "model": "dots-studio/dots-3-note-preview:free",
+    "error": "chat failed after retries: rate limited: {\"error\":{\"message\":\"Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day\",\"code\":429,\"metadata\":{\"headers\":{\"X-RateLimit-Limit\":\"50\",\"X-RateLimit-Remain"
+  }
+]
