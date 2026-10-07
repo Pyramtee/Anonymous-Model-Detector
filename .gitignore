@@ -9,6 +9,9 @@ build/
 .ruff_cache/
 .mypy_cache/
 data/tokenizers/
+data/artifacts/
+data/cache/
+data/runs/
 report.json
 *.tmp
 .env

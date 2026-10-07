@@ -1,6 +1,6 @@
 [project]
 name = "tokenizer-detector"
-version = "0.1.0"
+version = "0.2.0"
 description = "Detect which known vendor tokenizer an anonymous OpenRouter model uses"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -31,3 +31,4 @@ packages = ["src/tokenizer_detector"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+markers = ["integration: requires all pinned reference artifacts, never accesses the network"]

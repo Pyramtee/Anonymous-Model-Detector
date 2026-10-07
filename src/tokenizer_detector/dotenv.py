@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from .registry import PROJECT_ROOT
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 def load_dotenv(path: Path | None = None, override: bool = False) -> Path | None:

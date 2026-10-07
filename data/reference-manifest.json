@@ -1,0 +1,544 @@
+{
+  "schema_version": 1,
+  "version": "2026-09-27.1",
+  "references": [
+    {
+      "reference_id": "qwen3_8",
+      "family_id": "qwen",
+      "vendor": "Alibaba",
+      "display": "Qwen3.8",
+      "role": "target",
+      "required": true,
+      "backend": "hf_json_v1",
+      "policies": [
+        "plain",
+        "literal_special"
+      ],
+      "verified_models": [
+        {
+          "model_name": "Qwen/Qwen3.8-27B",
+          "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+          "relation": "pinned_reference"
+        },
+        {
+          "model_name": "Qwen/Qwen3.8-2.4T-A95B",
+          "revision": "207bd685a7e3696cfaff12ded7c6a7ea0f88c996",
+          "relation": "identical_artifact",
+          "artifact": "tokenizer.json",
+          "sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "model_name": "Qwen/Qwen3.8-Flash-Next",
+          "revision": "de4b8e4d43b917e7706784d8bb445c9af86a3540",
+          "relation": "identical_artifact",
+          "artifact": "tokenizer.json",
+          "sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        }
+      ],
+      "artifacts": [
+        {
+          "repo_id": "Qwen/Qwen3.8-27B",
+          "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+          "repo_path": "tokenizer_config.json",
+          "sha256": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+          "size_bytes": 17928,
+          "purpose": "config",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "Qwen/Qwen3.8-27B",
+          "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+          "repo_path": "tokenizer.json",
+          "sha256": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "size_bytes": 12809320,
+          "purpose": "tokenizer",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "Qwen/Qwen3.8-27B",
+          "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+          "repo_path": "chat_template.jinja",
+          "sha256": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041",
+          "size_bytes": 8952,
+          "purpose": "config",
+          "source_kind": "official"
+        }
+      ]
+    },
+    {
+      "reference_id": "mimo2_6",
+      "family_id": "mimo",
+      "vendor": "Xiaomi",
+      "display": "MiMo2.6",
+      "role": "target",
+      "required": true,
+      "backend": "hf_json_v1",
+      "policies": [
+        "plain",
+        "literal_special"
+      ],
+      "verified_models": [
+        {
+          "model_name": "XiaomiMiMo/MiMo-V2.6-Flash-RL",
+          "revision": "5711b268169967567844e1e560e8a3966da959b1",
+          "relation": "pinned_reference"
+        },
+        {
+          "model_name": "XiaomiMiMo/MiMo-V2.6-Pro-RL",
+          "revision": "73875d00b30a89ef8cc353a0b60b0e9f9561952d",
+          "relation": "identical_artifact",
+          "artifact": "tokenizer.json",
+          "sha256": "ff15eb925890d6b71b5160de4b846fbd13178438ab463b38ecc953e8cd1dcb3e"
+        }
+      ],
+      "artifacts": [
+        {
+          "repo_id": "XiaomiMiMo/MiMo-V2.6-Flash-RL",
+          "revision": "5711b268169967567844e1e560e8a3966da959b1",
+          "repo_path": "tokenizer_config.json",
+          "sha256": "413a7845f52943ccf4de0e5c838414507d16c44dbf573da9e20bc8902b384d06",
+          "size_bytes": 12150,
+          "purpose": "config",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "XiaomiMiMo/MiMo-V2.6-Flash-RL",
+          "revision": "5711b268169967567844e1e560e8a3966da959b1",
+          "repo_path": "tokenizer.json",
+          "sha256": "ff15eb925890d6b71b5160de4b846fbd13178438ab463b38ecc953e8cd1dcb3e",
+          "size_bytes": 11423823,
+          "purpose": "tokenizer",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "XiaomiMiMo/MiMo-V2.6-Flash-RL",
+          "revision": "5711b268169967567844e1e560e8a3966da959b1",
+          "repo_path": "chat_template.jinja",
+          "sha256": "853650bee57bf95020373e4c928bd5a4b41b9915adf964a77711d2b49a291887",
+          "size_bytes": 3868,
+          "purpose": "config",
+          "source_kind": "official"
+        }
+      ]
+    },
+    {
+      "reference_id": "deepseek_v4_1",
+      "family_id": "deepseek",
+      "vendor": "DeepSeek",
+      "display": "DeepSeek V4.1",
+      "role": "target",
+      "required": true,
+      "backend": "hf_json_v1",
+      "policies": [
+        "plain",
+        "literal_special"
+      ],
+      "verified_models": [
+        {
+          "model_name": "deepseek-ai/DeepSeek-V4.1-Flash",
+          "revision": "dba1be0a40aa45a94ad051997016db3960a90277",
+          "relation": "pinned_reference"
+        }
+      ],
+      "artifacts": [
+        {
+          "repo_id": "deepseek-ai/DeepSeek-V4.1-Flash",
+          "revision": "dba1be0a40aa45a94ad051997016db3960a90277",
+          "repo_path": "tokenizer_config.json",
+          "sha256": "6ac8c8dc065ed118161d02dd532749ae3f52c243deac27872134fae2f50d8547",
+          "size_bytes": 801,
+          "purpose": "config",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "deepseek-ai/DeepSeek-V4.1-Flash",
+          "revision": "dba1be0a40aa45a94ad051997016db3960a90277",
+          "repo_path": "tokenizer.json",
+          "sha256": "c90dfa01249db1be4245780a052ede752e1361c612ac6d08e2bdada7d599476b",
+          "size_bytes": 6367257,
+          "purpose": "tokenizer",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "deepseek-ai/DeepSeek-V4.1-Flash",
+          "revision": "dba1be0a40aa45a94ad051997016db3960a90277",
+          "repo_path": "encoding/encoding.py",
+          "sha256": "502bdaec8a3fd88ebc24c4721a7038fbe42f2063c664638127056107920035c1",
+          "size_bytes": 37316,
+          "purpose": "implementation",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "deepseek-ai/DeepSeek-V4.1-Flash",
+          "revision": "dba1be0a40aa45a94ad051997016db3960a90277",
+          "repo_path": "encoding/test_encoding.py",
+          "sha256": "4a470892dad828459958cebfad55da598aafcb7a5878764ccbfc3ab060399d06",
+          "size_bytes": 19371,
+          "purpose": "implementation",
+          "source_kind": "official"
+        }
+      ]
+    },
+    {
+      "reference_id": "step5",
+      "family_id": "step",
+      "vendor": "StepFun",
+      "display": "Step5",
+      "role": "target",
+      "required": true,
+      "backend": "hf_json_v1",
+      "policies": [
+        "plain",
+        "literal_special"
+      ],
+      "verified_models": [
+        {
+          "model_name": "rene98c/Step-5-Preview-BF16",
+          "revision": "a4d166d5856d65481db715453734cbfe4eeacac8",
+          "relation": "pinned_reference"
+        }
+      ],
+      "artifacts": [
+        {
+          "repo_id": "rene98c/Step-5-Preview-BF16",
+          "revision": "a4d166d5856d65481db715453734cbfe4eeacac8",
+          "repo_path": "tokenizer_config.json",
+          "sha256": "78202af487f4d4360e8d15cb0506d60718f8599770599c6f28f7f1fa045a591f",
+          "size_bytes": 163405,
+          "purpose": "config",
+          "source_kind": "accepted_mirror"
+        },
+        {
+          "repo_id": "rene98c/Step-5-Preview-BF16",
+          "revision": "a4d166d5856d65481db715453734cbfe4eeacac8",
+          "repo_path": "tokenizer.json",
+          "sha256": "b564c620eb77fa11d0926011c2202347d6cfc358d79724ee04ae7007e13636f0",
+          "size_bytes": 9976972,
+          "purpose": "tokenizer",
+          "source_kind": "accepted_mirror"
+        },
+        {
+          "repo_id": "rene98c/Step-5-Preview-BF16",
+          "revision": "a4d166d5856d65481db715453734cbfe4eeacac8",
+          "repo_path": "chat_template.jinja",
+          "sha256": "9d459a466e9648721ef6dda4cd168d921c2b6b4e7c0a82e032d261ea9854ef2e",
+          "size_bytes": 6004,
+          "purpose": "config",
+          "source_kind": "accepted_mirror"
+        },
+        {
+          "repo_id": "rene98c/Step-5-Preview-BF16",
+          "revision": "a4d166d5856d65481db715453734cbfe4eeacac8",
+          "repo_path": "special_tokens_map.json",
+          "sha256": "d47424bda11df4cedc3f9458915c465a28e601d3b7df0e78f6dff4d7727006c4",
+          "size_bytes": 468,
+          "purpose": "config",
+          "source_kind": "accepted_mirror"
+        }
+      ]
+    },
+    {
+      "reference_id": "kimi_k3",
+      "family_id": "kimi",
+      "vendor": "Moonshot",
+      "display": "Kimi K3",
+      "role": "target",
+      "required": true,
+      "backend": "kimi_k3_v1",
+      "policies": [
+        "plain",
+        "literal_special"
+      ],
+      "verified_models": [
+        {
+          "model_name": "moonshotai/Kimi-K3",
+          "revision": "f831ab66814297da540d832a5235f8e904f29d06",
+          "relation": "pinned_reference"
+        }
+      ],
+      "artifacts": [
+        {
+          "repo_id": "moonshotai/Kimi-K3",
+          "revision": "f831ab66814297da540d832a5235f8e904f29d06",
+          "repo_path": "tokenizer_config.json",
+          "sha256": "5d0803c94db9cd78763499e0956c95fd5a225c14a727e5a6cf5db3f96f010a6e",
+          "size_bytes": 3478,
+          "purpose": "config",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "moonshotai/Kimi-K3",
+          "revision": "f831ab66814297da540d832a5235f8e904f29d06",
+          "repo_path": "tiktoken.model",
+          "sha256": "b6c497a7469b33ced9c38afb1ad6e47f03f5e5dc05f15930799210ec050c5103",
+          "size_bytes": 2795286,
+          "purpose": "tokenizer",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "moonshotai/Kimi-K3",
+          "revision": "f831ab66814297da540d832a5235f8e904f29d06",
+          "repo_path": "tokenization_kimi.py",
+          "sha256": "f28ea66e2d862a2a5814970b2ce40c2f7d8296ff09aed90a7e7def689b906944",
+          "size_bytes": 16145,
+          "purpose": "implementation",
+          "source_kind": "official"
+        }
+      ]
+    },
+    {
+      "reference_id": "glm5_3",
+      "family_id": "glm",
+      "vendor": "Zhipu",
+      "display": "GLM5.3",
+      "role": "target",
+      "required": true,
+      "backend": "hf_json_v1",
+      "policies": [
+        "plain",
+        "literal_special"
+      ],
+      "verified_models": [
+        {
+          "model_name": "zai-org/GLM-5.3",
+          "revision": "aca966e4e02791568aa6a4ced368624b3d897f42",
+          "relation": "pinned_reference"
+        }
+      ],
+      "artifacts": [
+        {
+          "repo_id": "zai-org/GLM-5.3",
+          "revision": "aca966e4e02791568aa6a4ced368624b3d897f42",
+          "repo_path": "tokenizer_config.json",
+          "sha256": "98b1271574f41abf89427ae2dda030d94dc9478f0edc5a8bd240db213c6fd5fc",
+          "size_bytes": 761,
+          "purpose": "config",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "zai-org/GLM-5.3",
+          "revision": "aca966e4e02791568aa6a4ced368624b3d897f42",
+          "repo_path": "tokenizer.json",
+          "sha256": "19e773648cb4e65de8660ea6365e10acca112d42a854923df93db4a6f333a82d",
+          "size_bytes": 20217442,
+          "purpose": "tokenizer",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "zai-org/GLM-5.3",
+          "revision": "aca966e4e02791568aa6a4ced368624b3d897f42",
+          "repo_path": "chat_template.jinja",
+          "sha256": "3740abcea51c45830cb3ca562084ad5fb2ef53589376f73332e9886f93ade41c",
+          "size_bytes": 10734,
+          "purpose": "config",
+          "source_kind": "official"
+        }
+      ]
+    },
+    {
+      "reference_id": "minimax_m3",
+      "family_id": "minimax",
+      "vendor": "MiniMax",
+      "display": "MiniMax M3",
+      "role": "target",
+      "required": true,
+      "backend": "hf_json_v1",
+      "policies": [
+        "plain",
+        "literal_special"
+      ],
+      "verified_models": [
+        {
+          "model_name": "MiniMaxAI/MiniMax-M3",
+          "revision": "f0e1c1e04d40177e4673a22097036854f536e9c0",
+          "relation": "pinned_reference"
+        }
+      ],
+      "artifacts": [
+        {
+          "repo_id": "MiniMaxAI/MiniMax-M3",
+          "revision": "f0e1c1e04d40177e4673a22097036854f536e9c0",
+          "repo_path": "tokenizer_config.json",
+          "sha256": "15caca9f74fbce9b86dc014e9324cbefa56703d81ccd6d56020faa1c41d2eae5",
+          "size_bytes": 11288,
+          "purpose": "config",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "MiniMaxAI/MiniMax-M3",
+          "revision": "f0e1c1e04d40177e4673a22097036854f536e9c0",
+          "repo_path": "tokenizer.json",
+          "sha256": "bb1f1626cf01448f1e3b6036d0a061ffc66c91d9046aada14ea23a5441b5ad6e",
+          "size_bytes": 9731500,
+          "purpose": "tokenizer",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "MiniMaxAI/MiniMax-M3",
+          "revision": "f0e1c1e04d40177e4673a22097036854f536e9c0",
+          "repo_path": "chat_template.jinja",
+          "sha256": "11421244f67553498e5c8112dae02802025bcc4305ec45ad380af95c96f9fe64",
+          "size_bytes": 11756,
+          "purpose": "config",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "MiniMaxAI/MiniMax-M3",
+          "revision": "f0e1c1e04d40177e4673a22097036854f536e9c0",
+          "repo_path": "special_tokens_map.json",
+          "sha256": "401b624ec44507183d1dc65c74f7f3387699a77971aa19fa5a0cc57a3989ba97",
+          "size_bytes": 277,
+          "purpose": "config",
+          "source_kind": "official"
+        }
+      ]
+    },
+    {
+      "reference_id": "hy4",
+      "family_id": "hy",
+      "vendor": "Tencent",
+      "display": "Hy4",
+      "role": "target",
+      "required": true,
+      "backend": "hf_json_v1",
+      "policies": [
+        "plain",
+        "literal_special"
+      ],
+      "verified_models": [
+        {
+          "model_name": "tencent/Hy4-preview",
+          "revision": "705d81ee51566a186d645b74c974d642ef2828fe",
+          "relation": "pinned_reference"
+        }
+      ],
+      "artifacts": [
+        {
+          "repo_id": "tencent/Hy4-preview",
+          "revision": "705d81ee51566a186d645b74c974d642ef2828fe",
+          "repo_path": "tokenizer_config.json",
+          "sha256": "15267c495102b0ce259408a0b3a9dc11a6de74dd7dd8ef5b9757f64252a9b2df",
+          "size_bytes": 351,
+          "purpose": "config",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "tencent/Hy4-preview",
+          "revision": "705d81ee51566a186d645b74c974d642ef2828fe",
+          "repo_path": "tokenizer.json",
+          "sha256": "ff67615de6e6ee073a20bd1fe3a776053e821573f4ae566aeb8e9d43de801201",
+          "size_bytes": 9358955,
+          "purpose": "tokenizer",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "tencent/Hy4-preview",
+          "revision": "705d81ee51566a186d645b74c974d642ef2828fe",
+          "repo_path": "chat_template.jinja",
+          "sha256": "8a9925228e1c72edc6806b985ba06a4df2cc4ff803b4710a6d6e25d0ac03fae2",
+          "size_bytes": 14674,
+          "purpose": "config",
+          "source_kind": "official"
+        }
+      ]
+    },
+    {
+      "reference_id": "mistral_v0_3",
+      "family_id": "mistral_control",
+      "vendor": "Mistral",
+      "display": "Mistral v0.3",
+      "role": "external_control",
+      "required": false,
+      "backend": "hf_json_v1",
+      "policies": [
+        "plain",
+        "literal_special"
+      ],
+      "verified_models": [
+        {
+          "model_name": "mistralai/Mistral-7B-Instruct-v0.3",
+          "revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+          "relation": "pinned_reference"
+        }
+      ],
+      "artifacts": [
+        {
+          "repo_id": "mistralai/Mistral-7B-Instruct-v0.3",
+          "revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+          "repo_path": "tokenizer_config.json",
+          "sha256": "0533dec9cfe319163801b6618d0f3ec9cfa126b6288e3df5deca6e32acb09cd2",
+          "size_bytes": 140874,
+          "purpose": "config",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "mistralai/Mistral-7B-Instruct-v0.3",
+          "revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+          "repo_path": "tokenizer.json",
+          "sha256": "e553af6fff7d7ad76e830608b218c5c0b0822998d5a1a96099a74cd3c1cb1a49",
+          "size_bytes": 1961548,
+          "purpose": "tokenizer",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "mistralai/Mistral-7B-Instruct-v0.3",
+          "revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+          "repo_path": "special_tokens_map.json",
+          "sha256": "6fa06efa2785e450051989a6f8fb4416b10149ded485ddd3f127a40734f5cfd0",
+          "size_bytes": 414,
+          "purpose": "config",
+          "source_kind": "official"
+        }
+      ]
+    },
+    {
+      "reference_id": "gpt_neox",
+      "family_id": "neox_control",
+      "vendor": "EleutherAI",
+      "display": "GPT-NeoX",
+      "role": "external_control",
+      "required": false,
+      "backend": "hf_json_v1",
+      "policies": [
+        "plain",
+        "literal_special"
+      ],
+      "verified_models": [
+        {
+          "model_name": "EleutherAI/gpt-neox-20b",
+          "revision": "c292233c833e336628618a88a648727eb3dff0a7",
+          "relation": "pinned_reference"
+        }
+      ],
+      "artifacts": [
+        {
+          "repo_id": "EleutherAI/gpt-neox-20b",
+          "revision": "c292233c833e336628618a88a648727eb3dff0a7",
+          "repo_path": "tokenizer_config.json",
+          "sha256": "6c50f7b37042a059c71a347be27bc53cc4fcb0f6c8166b00712f3937c91e6bc7",
+          "size_bytes": 156,
+          "purpose": "config",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "EleutherAI/gpt-neox-20b",
+          "revision": "c292233c833e336628618a88a648727eb3dff0a7",
+          "repo_path": "tokenizer.json",
+          "sha256": "c24618a1b3e6a38167beff1c72cffd126c3a66254347304b50547d12c5f25624",
+          "size_bytes": 2113710,
+          "purpose": "tokenizer",
+          "source_kind": "official"
+        },
+        {
+          "repo_id": "EleutherAI/gpt-neox-20b",
+          "revision": "c292233c833e336628618a88a648727eb3dff0a7",
+          "repo_path": "special_tokens_map.json",
+          "sha256": "c0b3c279b6ecdb71996a86ffb4d4ab94dfdb5df95f00bac9515688faef2ff5dd",
+          "size_bytes": 90,
+          "purpose": "config",
+          "source_kind": "official"
+        }
+      ]
+    }
+  ]
+}

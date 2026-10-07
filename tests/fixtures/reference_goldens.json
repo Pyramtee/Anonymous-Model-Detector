@@ -1,0 +1,1292 @@
+{
+  "schema_version": 1,
+  "provenance": {
+    "kind": "synthetic_offline_official_tokenizer_oracle",
+    "method": "Direct official HF JSON; official Kimi constants extracted through AST and used by tiktoken. No production adapter calls. Plain is a defined base-pipeline hypothesis. HTTP counts add synthetic fixed offset 17, not real API evidence.",
+    "source_script": "scripts/generate_reference_fixtures.py",
+    "source_script_sha256": "6496e75c7b597af2b1b3b9bdca64de6f8cd4661315d1c5716398516719b4c290",
+    "manifest_sha256": "039b1a9b0c54dee160f79ee73c74d7eb4e23d424f6293d0c6d64b12c0019f363",
+    "probe_version": "2026-09-27.3",
+    "probe_sha256": "093c11719f213f2b7c9b2d9c0709846ded8bdd7209542ecd0bcb3e6d367a46e0",
+    "tokenizers_version": "0.23.2",
+    "tiktoken_version": "0.14.0",
+    "references": {
+      "qwen3_8": {
+        "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+        "artifact_sha256": {
+          "tokenizer_config.json": "b11349aafa7cdc6a320767cf7ceb29ed82f7eda5d65e8e0819e76f0ce947bf27",
+          "tokenizer.json": "0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "chat_template.jinja": "c3cf9e34abf4f9e36c2d72165aa9c132d3e2a725b6c2586aaa3a8af9d7a81041"
+        }
+      },
+      "mimo2_6": {
+        "revision": "5711b268169967567844e1e560e8a3966da959b1",
+        "artifact_sha256": {
+          "tokenizer_config.json": "413a7845f52943ccf4de0e5c838414507d16c44dbf573da9e20bc8902b384d06",
+          "tokenizer.json": "ff15eb925890d6b71b5160de4b846fbd13178438ab463b38ecc953e8cd1dcb3e",
+          "chat_template.jinja": "853650bee57bf95020373e4c928bd5a4b41b9915adf964a77711d2b49a291887"
+        }
+      },
+      "deepseek_v4_1": {
+        "revision": "dba1be0a40aa45a94ad051997016db3960a90277",
+        "artifact_sha256": {
+          "tokenizer_config.json": "6ac8c8dc065ed118161d02dd532749ae3f52c243deac27872134fae2f50d8547",
+          "tokenizer.json": "c90dfa01249db1be4245780a052ede752e1361c612ac6d08e2bdada7d599476b",
+          "encoding/encoding.py": "502bdaec8a3fd88ebc24c4721a7038fbe42f2063c664638127056107920035c1",
+          "encoding/test_encoding.py": "4a470892dad828459958cebfad55da598aafcb7a5878764ccbfc3ab060399d06"
+        }
+      },
+      "step5": {
+        "revision": "a4d166d5856d65481db715453734cbfe4eeacac8",
+        "artifact_sha256": {
+          "tokenizer_config.json": "78202af487f4d4360e8d15cb0506d60718f8599770599c6f28f7f1fa045a591f",
+          "tokenizer.json": "b564c620eb77fa11d0926011c2202347d6cfc358d79724ee04ae7007e13636f0",
+          "chat_template.jinja": "9d459a466e9648721ef6dda4cd168d921c2b6b4e7c0a82e032d261ea9854ef2e",
+          "special_tokens_map.json": "d47424bda11df4cedc3f9458915c465a28e601d3b7df0e78f6dff4d7727006c4"
+        }
+      },
+      "kimi_k3": {
+        "revision": "f831ab66814297da540d832a5235f8e904f29d06",
+        "artifact_sha256": {
+          "tokenizer_config.json": "5d0803c94db9cd78763499e0956c95fd5a225c14a727e5a6cf5db3f96f010a6e",
+          "tiktoken.model": "b6c497a7469b33ced9c38afb1ad6e47f03f5e5dc05f15930799210ec050c5103",
+          "tokenization_kimi.py": "f28ea66e2d862a2a5814970b2ce40c2f7d8296ff09aed90a7e7def689b906944"
+        }
+      },
+      "glm5_3": {
+        "revision": "aca966e4e02791568aa6a4ced368624b3d897f42",
+        "artifact_sha256": {
+          "tokenizer_config.json": "98b1271574f41abf89427ae2dda030d94dc9478f0edc5a8bd240db213c6fd5fc",
+          "tokenizer.json": "19e773648cb4e65de8660ea6365e10acca112d42a854923df93db4a6f333a82d",
+          "chat_template.jinja": "3740abcea51c45830cb3ca562084ad5fb2ef53589376f73332e9886f93ade41c"
+        }
+      },
+      "minimax_m3": {
+        "revision": "f0e1c1e04d40177e4673a22097036854f536e9c0",
+        "artifact_sha256": {
+          "tokenizer_config.json": "15caca9f74fbce9b86dc014e9324cbefa56703d81ccd6d56020faa1c41d2eae5",
+          "tokenizer.json": "bb1f1626cf01448f1e3b6036d0a061ffc66c91d9046aada14ea23a5441b5ad6e",
+          "chat_template.jinja": "11421244f67553498e5c8112dae02802025bcc4305ec45ad380af95c96f9fe64",
+          "special_tokens_map.json": "401b624ec44507183d1dc65c74f7f3387699a77971aa19fa5a0cc57a3989ba97"
+        }
+      },
+      "hy4": {
+        "revision": "705d81ee51566a186d645b74c974d642ef2828fe",
+        "artifact_sha256": {
+          "tokenizer_config.json": "15267c495102b0ce259408a0b3a9dc11a6de74dd7dd8ef5b9757f64252a9b2df",
+          "tokenizer.json": "ff67615de6e6ee073a20bd1fe3a776053e821573f4ae566aeb8e9d43de801201",
+          "chat_template.jinja": "8a9925228e1c72edc6806b985ba06a4df2cc4ff803b4710a6d6e25d0ac03fae2"
+        }
+      },
+      "mistral_v0_3": {
+        "revision": "c170c708c41dac9275d15a8fff4eca08d52bab71",
+        "artifact_sha256": {
+          "tokenizer_config.json": "0533dec9cfe319163801b6618d0f3ec9cfa126b6288e3df5deca6e32acb09cd2",
+          "tokenizer.json": "e553af6fff7d7ad76e830608b218c5c0b0822998d5a1a96099a74cd3c1cb1a49",
+          "special_tokens_map.json": "6fa06efa2785e450051989a6f8fb4416b10149ded485ddd3f127a40734f5cfd0"
+        }
+      },
+      "gpt_neox": {
+        "revision": "c292233c833e336628618a88a648727eb3dff0a7",
+        "artifact_sha256": {
+          "tokenizer_config.json": "6c50f7b37042a059c71a347be27bc53cc4fcb0f6c8166b00712f3937c91e6bc7",
+          "tokenizer.json": "c24618a1b3e6a38167beff1c72cffd126c3a66254347304b50547d12c5f25624",
+          "special_tokens_map.json": "c0b3c279b6ecdb71996a86ffb4d4ab94dfdb5df95f00bac9515688faef2ff5dd"
+        }
+      }
+    }
+  },
+  "cases": [
+    {
+      "reference_id": "qwen3_8",
+      "policy": "literal_special",
+      "text": "Hello 世界 123456789",
+      "ids": [
+        9419,
+        220,
+        96748,
+        220,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ]
+    },
+    {
+      "reference_id": "qwen3_8",
+      "policy": "literal_special",
+      "text": "नमस्ते दुनिया",
+      "ids": [
+        58069,
+        84237,
+        150104,
+        153348,
+        184642,
+        235886
+      ]
+    },
+    {
+      "reference_id": "qwen3_8",
+      "policy": "literal_special",
+      "text": "é é á̧",
+      "ids": [
+        933,
+        3825,
+        18135,
+        136,
+        100
+      ]
+    },
+    {
+      "reference_id": "qwen3_8",
+      "policy": "literal_special",
+      "text": "a\t b\r\nc",
+      "ids": [
+        64,
+        197,
+        292,
+        317,
+        66
+      ]
+    },
+    {
+      "reference_id": "qwen3_8",
+      "policy": "literal_special",
+      "text": "<im_start>",
+      "ids": [
+        27,
+        316,
+        4747,
+        29
+      ]
+    },
+    {
+      "reference_id": "qwen3_8",
+      "policy": "literal_special",
+      "text": "<｜place▁holder▁no▁0｜>",
+      "ids": [
+        27,
+        158819,
+        1940,
+        10107,
+        223,
+        4112,
+        10107,
+        223,
+        2083,
+        10107,
+        223,
+        15,
+        158819,
+        29
+      ]
+    },
+    {
+      "reference_id": "qwen3_8",
+      "policy": "literal_special",
+      "text": "[BOS]",
+      "ids": [
+        31543,
+        3026,
+        60
+      ]
+    },
+    {
+      "reference_id": "qwen3_8",
+      "policy": "literal_special",
+      "text": "<|reserved_token_163592|>",
+      "ids": [
+        27,
+        91,
+        49382,
+        6256,
+        62,
+        16,
+        21,
+        18,
+        20,
+        24,
+        17,
+        91,
+        29
+      ]
+    },
+    {
+      "reference_id": "mimo2_6",
+      "policy": "literal_special",
+      "text": "Hello 世界 123456789",
+      "ids": [
+        9707,
+        220,
+        99489,
+        220,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ]
+    },
+    {
+      "reference_id": "mimo2_6",
+      "policy": "literal_special",
+      "text": "नमस्ते दुनिया",
+      "ids": [
+        60096,
+        87244,
+        78368,
+        30484,
+        97,
+        34370,
+        14925,
+        99,
+        72653,
+        60096,
+        42311,
+        107,
+        23868
+      ]
+    },
+    {
+      "reference_id": "mimo2_6",
+      "policy": "literal_special",
+      "text": "é é á̧",
+      "ids": [
+        963,
+        3958,
+        18698,
+        136,
+        100
+      ]
+    },
+    {
+      "reference_id": "mimo2_6",
+      "policy": "literal_special",
+      "text": "a\t b\r\nc",
+      "ids": [
+        64,
+        197,
+        293,
+        319,
+        66
+      ]
+    },
+    {
+      "reference_id": "mimo2_6",
+      "policy": "literal_special",
+      "text": "<im_start>",
+      "ids": [
+        27,
+        318,
+        4906,
+        29
+      ]
+    },
+    {
+      "reference_id": "mimo2_6",
+      "policy": "literal_special",
+      "text": "<｜place▁holder▁no▁0｜>",
+      "ids": [
+        27,
+        130957,
+        2007,
+        10417,
+        223,
+        4251,
+        10417,
+        223,
+        2152,
+        10417,
+        223,
+        15,
+        130957,
+        29
+      ]
+    },
+    {
+      "reference_id": "mimo2_6",
+      "policy": "literal_special",
+      "text": "[BOS]",
+      "ids": [
+        32622,
+        3126,
+        60
+      ]
+    },
+    {
+      "reference_id": "mimo2_6",
+      "policy": "literal_special",
+      "text": "<|reserved_token_163592|>",
+      "ids": [
+        27,
+        91,
+        51102,
+        6458,
+        62,
+        16,
+        21,
+        18,
+        20,
+        24,
+        17,
+        91,
+        29
+      ]
+    },
+    {
+      "reference_id": "deepseek_v4_1",
+      "policy": "literal_special",
+      "text": "Hello 世界 123456789",
+      "ids": [
+        19923,
+        223,
+        3427,
+        223,
+        6895,
+        18009,
+        25744
+      ]
+    },
+    {
+      "reference_id": "deepseek_v4_1",
+      "policy": "literal_special",
+      "text": "नमस्ते दुनिया",
+      "ids": [
+        9094,
+        12524,
+        70223,
+        6011,
+        26227,
+        101422,
+        85639
+      ]
+    },
+    {
+      "reference_id": "deepseek_v4_1",
+      "policy": "literal_special",
+      "text": "é é á̧",
+      "ids": [
+        619,
+        312,
+        17793,
+        260,
+        17793,
+        139,
+        103
+      ]
+    },
+    {
+      "reference_id": "deepseek_v4_1",
+      "policy": "literal_special",
+      "text": "a\t b\r\nc",
+      "ids": [
+        67,
+        200,
+        291,
+        204,
+        201,
+        69
+      ]
+    },
+    {
+      "reference_id": "deepseek_v4_1",
+      "policy": "literal_special",
+      "text": "<im_start>",
+      "ids": [
+        30,
+        328,
+        37864,
+        32
+      ]
+    },
+    {
+      "reference_id": "deepseek_v4_1",
+      "policy": "literal_special",
+      "text": "<｜place▁holder▁no▁0｜>",
+      "ids": [
+        128000
+      ]
+    },
+    {
+      "reference_id": "deepseek_v4_1",
+      "policy": "literal_special",
+      "text": "[BOS]",
+      "ids": [
+        102853,
+        4687,
+        63
+      ]
+    },
+    {
+      "reference_id": "deepseek_v4_1",
+      "policy": "literal_special",
+      "text": "<|reserved_token_163592|>",
+      "ids": [
+        30,
+        94,
+        443,
+        8425,
+        40079,
+        65,
+        9265,
+        25403,
+        94,
+        32
+      ]
+    },
+    {
+      "reference_id": "step5",
+      "policy": "literal_special",
+      "text": "Hello 世界 123456789",
+      "ids": [
+        19923,
+        223,
+        3427,
+        223,
+        6895,
+        18009,
+        25744
+      ]
+    },
+    {
+      "reference_id": "step5",
+      "policy": "literal_special",
+      "text": "नमस्ते दुनिया",
+      "ids": [
+        9094,
+        12524,
+        70223,
+        6011,
+        26227,
+        101422,
+        85639
+      ]
+    },
+    {
+      "reference_id": "step5",
+      "policy": "literal_special",
+      "text": "é é á̧",
+      "ids": [
+        619,
+        312,
+        17793,
+        260,
+        17793,
+        139,
+        103
+      ]
+    },
+    {
+      "reference_id": "step5",
+      "policy": "literal_special",
+      "text": "a\t b\r\nc",
+      "ids": [
+        67,
+        200,
+        291,
+        204,
+        201,
+        69
+      ]
+    },
+    {
+      "reference_id": "step5",
+      "policy": "literal_special",
+      "text": "<im_start>",
+      "ids": [
+        128000
+      ]
+    },
+    {
+      "reference_id": "step5",
+      "policy": "literal_special",
+      "text": "<｜place▁holder▁no▁0｜>",
+      "ids": [
+        30,
+        28217,
+        4205,
+        5487,
+        226,
+        14646,
+        5487,
+        226,
+        3567,
+        5487,
+        226,
+        18,
+        28217,
+        32
+      ]
+    },
+    {
+      "reference_id": "step5",
+      "policy": "literal_special",
+      "text": "[BOS]",
+      "ids": [
+        102853,
+        4687,
+        63
+      ]
+    },
+    {
+      "reference_id": "step5",
+      "policy": "literal_special",
+      "text": "<|reserved_token_163592|>",
+      "ids": [
+        30,
+        94,
+        443,
+        8425,
+        40079,
+        65,
+        9265,
+        25403,
+        94,
+        32
+      ]
+    },
+    {
+      "reference_id": "kimi_k3",
+      "policy": "literal_special",
+      "text": "Hello 世界 123456789",
+      "ids": [
+        19180,
+        220,
+        2243,
+        220,
+        6694,
+        12972,
+        16242
+      ]
+    },
+    {
+      "reference_id": "kimi_k3",
+      "policy": "literal_special",
+      "text": "नमस्ते दुनिया",
+      "ids": [
+        11334,
+        14915,
+        72819,
+        7614,
+        31019,
+        108729,
+        109111
+      ]
+    },
+    {
+      "reference_id": "kimi_k3",
+      "policy": "literal_special",
+      "text": "é é á̧",
+      "ids": [
+        1941,
+        350,
+        37484,
+        261,
+        37484,
+        136,
+        100
+      ]
+    },
+    {
+      "reference_id": "kimi_k3",
+      "policy": "literal_special",
+      "text": "a\t b\r\nc",
+      "ids": [
+        64,
+        197,
+        291,
+        462,
+        66
+      ]
+    },
+    {
+      "reference_id": "kimi_k3",
+      "policy": "literal_special",
+      "text": "<im_start>",
+      "ids": [
+        27,
+        348,
+        9485,
+        29
+      ]
+    },
+    {
+      "reference_id": "kimi_k3",
+      "policy": "literal_special",
+      "text": "<｜place▁holder▁no▁0｜>",
+      "ids": [
+        27,
+        24576,
+        250,
+        3881,
+        7058,
+        223,
+        10630,
+        7058,
+        223,
+        4069,
+        7058,
+        223,
+        15,
+        24576,
+        250,
+        29
+      ]
+    },
+    {
+      "reference_id": "kimi_k3",
+      "policy": "literal_special",
+      "text": "[BOS]",
+      "ids": [
+        163584
+      ]
+    },
+    {
+      "reference_id": "kimi_k3",
+      "policy": "literal_special",
+      "text": "<|reserved_token_163592|>",
+      "ids": [
+        163592
+      ]
+    },
+    {
+      "reference_id": "kimi_k3",
+      "policy": "plain",
+      "text": "[BOS]",
+      "ids": [
+        72706,
+        4110,
+        60
+      ]
+    },
+    {
+      "reference_id": "kimi_k3",
+      "policy": "plain",
+      "text": "<|reserved_token_163592|>",
+      "ids": [
+        27,
+        91,
+        64345,
+        14147,
+        62,
+        18752,
+        43247,
+        91,
+        29
+      ]
+    },
+    {
+      "reference_id": "kimi_k3",
+      "policy": "plain",
+      "text": "<|open|>",
+      "ids": [
+        27,
+        91,
+        4454,
+        91,
+        29
+      ]
+    },
+    {
+      "reference_id": "glm5_3",
+      "policy": "literal_special",
+      "text": "Hello 世界 123456789",
+      "ids": [
+        9703,
+        111085,
+        220,
+        108714,
+        100461,
+        21,
+        100928,
+        24
+      ]
+    },
+    {
+      "reference_id": "glm5_3",
+      "policy": "literal_special",
+      "text": "नमस्ते दुनिया",
+      "ids": [
+        59678,
+        86522,
+        77740,
+        30366,
+        97,
+        34200,
+        14913,
+        99,
+        72094,
+        59678,
+        42069,
+        107,
+        23801
+      ]
+    },
+    {
+      "reference_id": "glm5_3",
+      "policy": "literal_special",
+      "text": "é é á̧",
+      "ids": [
+        963,
+        384,
+        53481,
+        264,
+        53481,
+        151495
+      ]
+    },
+    {
+      "reference_id": "glm5_3",
+      "policy": "literal_special",
+      "text": "a\t b\r\nc",
+      "ids": [
+        64,
+        197,
+        293,
+        319,
+        66
+      ]
+    },
+    {
+      "reference_id": "glm5_3",
+      "policy": "literal_special",
+      "text": "<im_start>",
+      "ids": [
+        27,
+        318,
+        4906,
+        29
+      ]
+    },
+    {
+      "reference_id": "glm5_3",
+      "policy": "literal_special",
+      "text": "<｜place▁holder▁no▁0｜>",
+      "ids": [
+        27,
+        105617,
+        2007,
+        10412,
+        223,
+        4251,
+        10412,
+        223,
+        2152,
+        10412,
+        223,
+        15,
+        105617,
+        29
+      ]
+    },
+    {
+      "reference_id": "glm5_3",
+      "policy": "literal_special",
+      "text": "[BOS]",
+      "ids": [
+        32473,
+        3126,
+        60
+      ]
+    },
+    {
+      "reference_id": "glm5_3",
+      "policy": "literal_special",
+      "text": "<|reserved_token_163592|>",
+      "ids": [
+        27,
+        91,
+        50767,
+        6458,
+        62,
+        114491,
+        102573,
+        17,
+        91,
+        29
+      ]
+    },
+    {
+      "reference_id": "minimax_m3",
+      "policy": "literal_special",
+      "text": "Hello 世界 123456789",
+      "ids": [
+        19739,
+        112507,
+        32,
+        10010,
+        26551,
+        39490
+      ]
+    },
+    {
+      "reference_id": "minimax_m3",
+      "policy": "literal_special",
+      "text": "नमस्ते दुनिया",
+      "ids": [
+        14196,
+        17881,
+        103121,
+        10338,
+        42953,
+        158315,
+        177712
+      ]
+    },
+    {
+      "reference_id": "minimax_m3",
+      "policy": "literal_special",
+      "text": "é é á̧",
+      "ids": [
+        337,
+        886,
+        4875,
+        124218
+      ]
+    },
+    {
+      "reference_id": "minimax_m3",
+      "policy": "literal_special",
+      "text": "a\t b\r\nc",
+      "ids": [
+        97,
+        9,
+        287,
+        2535,
+        99
+      ]
+    },
+    {
+      "reference_id": "minimax_m3",
+      "policy": "literal_special",
+      "text": "<im_start>",
+      "ids": [
+        60,
+        324,
+        22242,
+        62
+      ]
+    },
+    {
+      "reference_id": "minimax_m3",
+      "policy": "literal_special",
+      "text": "<｜place▁holder▁no▁0｜>",
+      "ids": [
+        60,
+        18506,
+        4962,
+        4475,
+        129,
+        14895,
+        4475,
+        129,
+        2877,
+        4475,
+        129,
+        48,
+        18506,
+        62
+      ]
+    },
+    {
+      "reference_id": "minimax_m3",
+      "policy": "literal_special",
+      "text": "[BOS]",
+      "ids": [
+        91283,
+        3468,
+        93
+      ]
+    },
+    {
+      "reference_id": "minimax_m3",
+      "policy": "literal_special",
+      "text": "<|reserved_token_163592|>",
+      "ids": [
+        60,
+        124,
+        126707,
+        23501,
+        95,
+        17783,
+        49535,
+        109675
+      ]
+    },
+    {
+      "reference_id": "hy4",
+      "policy": "literal_special",
+      "text": "Hello 世界 123456789",
+      "ids": [
+        12433,
+        220,
+        3913,
+        220,
+        6636,
+        17243,
+        29041
+      ]
+    },
+    {
+      "reference_id": "hy4",
+      "policy": "literal_special",
+      "text": "नमस्ते दुनिया",
+      "ids": [
+        5695,
+        8171,
+        49753,
+        3385,
+        15597,
+        58592,
+        37821
+      ]
+    },
+    {
+      "reference_id": "hy4",
+      "policy": "literal_special",
+      "text": "é é á̧",
+      "ids": [
+        729,
+        319,
+        20639,
+        259,
+        20639,
+        136,
+        100
+      ]
+    },
+    {
+      "reference_id": "hy4",
+      "policy": "literal_special",
+      "text": "a\t b\r\nc",
+      "ids": [
+        64,
+        197,
+        289,
+        201,
+        198,
+        66
+      ]
+    },
+    {
+      "reference_id": "hy4",
+      "policy": "literal_special",
+      "text": "<im_start>",
+      "ids": [
+        27,
+        331,
+        17845,
+        29
+      ]
+    },
+    {
+      "reference_id": "hy4",
+      "policy": "literal_special",
+      "text": "<｜place▁holder▁no▁0｜>",
+      "ids": [
+        27,
+        32243,
+        5040,
+        5609,
+        223,
+        13382,
+        5609,
+        223,
+        3202,
+        5609,
+        223,
+        15,
+        32243,
+        29
+      ]
+    },
+    {
+      "reference_id": "hy4",
+      "policy": "literal_special",
+      "text": "[BOS]",
+      "ids": [
+        56244,
+        3459,
+        60
+      ]
+    },
+    {
+      "reference_id": "hy4",
+      "policy": "literal_special",
+      "text": "<|reserved_token_163592|>",
+      "ids": [
+        113735,
+        109121,
+        27209,
+        62,
+        12528,
+        33439,
+        102616
+      ]
+    },
+    {
+      "reference_id": "mistral_v0_3",
+      "policy": "literal_special",
+      "text": "Hello 世界 123456789",
+      "ids": [
+        23325,
+        29473,
+        30818,
+        30590,
+        29473,
+        29508,
+        29518,
+        29538,
+        29549,
+        29550,
+        29552,
+        29555,
+        29551,
+        29542
+      ]
+    },
+    {
+      "reference_id": "mistral_v0_3",
+      "policy": "literal_special",
+      "text": "नमस्ते दुनिया",
+      "ids": [
+        29473,
+        30308,
+        30440,
+        30439,
+        30068,
+        30476,
+        30354,
+        29473,
+        30814,
+        30802,
+        30308,
+        30322,
+        30664,
+        30000
+      ]
+    },
+    {
+      "reference_id": "mistral_v0_3",
+      "policy": "literal_special",
+      "text": "é é á̧",
+      "ids": [
+        2001,
+        1085,
+        29717,
+        1032,
+        29717,
+        32736
+      ]
+    },
+    {
+      "reference_id": "mistral_v0_3",
+      "policy": "literal_special",
+      "text": "a\t b\r\nc",
+      "ids": [
+        1032,
+        780,
+        1055,
+        29569,
+        781,
+        29485
+      ]
+    },
+    {
+      "reference_id": "mistral_v0_3",
+      "policy": "literal_special",
+      "text": "<im_start>",
+      "ids": [
+        1291,
+        1089,
+        29498,
+        3289,
+        29535
+      ]
+    },
+    {
+      "reference_id": "mistral_v0_3",
+      "policy": "literal_special",
+      "text": "<｜place▁holder▁no▁0｜>",
+      "ids": [
+        1291,
+        1010,
+        960,
+        927,
+        3680,
+        22264,
+        1476,
+        29473,
+        29502,
+        1010,
+        960,
+        927,
+        29535
+      ]
+    },
+    {
+      "reference_id": "mistral_v0_3",
+      "policy": "literal_special",
+      "text": "[BOS]",
+      "ids": [
+        1501,
+        29528,
+        4611,
+        29561
+      ]
+    },
+    {
+      "reference_id": "mistral_v0_3",
+      "policy": "literal_special",
+      "text": "<|reserved_token_163592|>",
+      "ids": [
+        1291,
+        29534,
+        1179,
+        8833,
+        29498,
+        6031,
+        29498,
+        29508,
+        29552,
+        29538,
+        29550,
+        29542,
+        29518,
+        29534,
+        29535
+      ]
+    },
+    {
+      "reference_id": "gpt_neox",
+      "policy": "literal_special",
+      "text": "Hello 世界 123456789",
+      "ids": [
+        12092,
+        209,
+        42848,
+        45261,
+        1249,
+        16767,
+        43784
+      ]
+    },
+    {
+      "reference_id": "gpt_neox",
+      "policy": "literal_special",
+      "text": "नमस्ते दुनिया",
+      "ids": [
+        23068,
+        32191,
+        28733,
+        17665,
+        23936,
+        15472,
+        6280,
+        101,
+        38619,
+        23068,
+        20489,
+        29950,
+        12001
+      ]
+    },
+    {
+      "reference_id": "gpt_neox",
+      "policy": "literal_special",
+      "text": "é é á̧",
+      "ids": [
+        860,
+        3974,
+        21079,
+        136,
+        102
+      ]
+    },
+    {
+      "reference_id": "gpt_neox",
+      "policy": "literal_special",
+      "text": "a\t b\r\nc",
+      "ids": [
+        66,
+        186,
+        270,
+        190,
+        187,
+        68
+      ]
+    },
+    {
+      "reference_id": "gpt_neox",
+      "policy": "literal_special",
+      "text": "<im_start>",
+      "ids": [
+        29,
+        303,
+        64,
+        5478,
+        31
+      ]
+    },
+    {
+      "reference_id": "gpt_neox",
+      "policy": "literal_special",
+      "text": "<｜place▁holder▁no▁0｜>",
+      "ids": [
+        29,
+        20422,
+        239,
+        5070,
+        10897,
+        212,
+        11375,
+        10897,
+        212,
+        2369,
+        10897,
+        212,
+        17,
+        20422,
+        239,
+        31
+      ]
+    },
+    {
+      "reference_id": "gpt_neox",
+      "policy": "literal_special",
+      "text": "[BOS]",
+      "ids": [
+        60,
+        35,
+        2697,
+        62
+      ]
+    },
+    {
+      "reference_id": "gpt_neox",
+      "policy": "literal_special",
+      "text": "<|reserved_token_163592|>",
+      "ids": [
+        29,
+        93,
+        47849,
+        64,
+        13763,
+        64,
+        1036,
+        1671,
+        4529,
+        49651
+      ]
+    }
+  ]
+}
