@@ -17,6 +17,72 @@ import httpx
 from .run_store import RunStore
 
 BASE_URL = "https://openrouter.ai/api/v1"
+ZEN_BASE_URL = "https://opencode.ai/inference/v1"
+
+
+def parse_chat_sse(raw: str) -> dict[str, Any]:
+    """Normalize a complete Chat Completions stream; retain raw SSE separately."""
+    chunks = []
+    done = False
+    for event in raw.replace("\r\n", "\n").replace("\r", "\n").split("\n\n"):
+        lines = [line[5:].removeprefix(" ") for line in event.split("\n") if line.startswith("data:")]
+        if not lines:
+            continue
+        payload = "\n".join(lines)
+        if payload == "[DONE]":
+            if done:
+                raise ValueError("Duplicate SSE completion")
+            done = True
+            continue
+        chunk = jsonlib.loads(payload, parse_constant=_reject_constant)
+        if done:
+            # Zen appends a billing-only event after the provider's [DONE].
+            # It must never replace usage, identities, or generated content.
+            if (isinstance(chunk, dict) and set(chunk) <= {"choices", "cost"}
+                    and chunk.get("choices") == [] and isinstance(chunk.get("cost"), str)):
+                continue
+            raise ValueError("Token data or errors after SSE completion")
+        if not isinstance(chunk, dict) or chunk.get("error"):
+            raise ValueError("Invalid or failed SSE chunk")
+        chunks.append(chunk)
+    if not done or not chunks:
+        raise ValueError("Incomplete SSE response")
+    identities = {}
+    for field_name in ("id", "model", "provider"):
+        values = {c[field_name] for c in chunks if isinstance(c.get(field_name), str) and c[field_name]}
+        if len(values) > 1:
+            raise ValueError(f"SSE {field_name} changed within a response")
+        identities[field_name] = next(iter(values), None)
+    content, finish, usage = [], None, {}
+    for chunk in chunks:
+        if chunk.get("usage") is not None:
+            if not isinstance(chunk["usage"], dict):
+                raise ValueError("Invalid SSE usage")
+            usage = chunk["usage"]
+        choices = chunk.get("choices", [])
+        if not isinstance(choices, list):
+            raise ValueError("Invalid SSE choices")
+        for choice in choices:
+            if not isinstance(choice, dict) or choice.get("error"):
+                raise ValueError("Invalid SSE choice")
+            if choice.get("index", 0) != 0:
+                continue
+            delta = choice.get("delta", {})
+            if not isinstance(delta, dict):
+                raise ValueError("Invalid SSE delta")
+            part = delta.get("content")
+            if part is not None:
+                if not isinstance(part, str):
+                    raise ValueError("Invalid SSE content")
+                content.append(part)
+            if choice.get("finish_reason") is not None:
+                if not isinstance(choice["finish_reason"], str):
+                    raise ValueError("Invalid SSE finish reason")
+                finish = choice["finish_reason"]
+    if finish is None:
+        raise ValueError("SSE response has no finished choice")
+    return {**identities, "choices": [{"message": {"content": "".join(content)}, "finish_reason": finish}],
+            "usage": usage}
 
 
 class BudgetExceeded(RuntimeError):
@@ -129,13 +195,18 @@ class BudgetedTransport:
     def __init__(self, store: RunStore, api_key: str, max_requests: int,
                  client: httpx.Client | None = None, min_interval: float = 3.1,
                  sleep: Callable[[float], None] = time.sleep,
-                 clock: Callable[[], float] = time.monotonic) -> None:
+                 clock: Callable[[], float] = time.monotonic,
+                 backend: str = "openrouter") -> None:
         if type(max_requests) is not int or max_requests < 0:
             raise ValueError("max_requests must be a nonnegative integer")
         if not math.isfinite(min_interval) or min_interval < 0:
             raise ValueError("min_interval must be finite and nonnegative")
-        if not api_key:
+        if backend not in {"openrouter", "opencode"}:
+            raise ValueError("Unknown transport backend")
+        if not api_key and backend == "openrouter":
             raise ValueError("API key is required for online transport")
+        self.backend = backend
+        self.base_url = BASE_URL if backend == "openrouter" else ZEN_BASE_URL
         self.store, self.api_key, self.max_requests = store, api_key, max_requests
         self.min_interval, self.sleep, self.clock = min_interval, sleep, clock
         self._last_started: float | None = None
@@ -148,16 +219,27 @@ class BudgetedTransport:
     def send(self, method: str, path: str, *, json: Any = None,
              params: dict[str, Any] | None = None, purpose: str = "",
              probe_id: str | None = None, group_id: str | None = None,
-             logical_id: str | None = None) -> AttemptResult:
+             logical_id: str | None = None, headers: dict[str, str] | None = None,
+             context_sha256: str | None = None) -> AttemptResult:
         method = method.upper()
         parsed = urlsplit(path)
         if method not in {"GET", "POST"} or parsed.scheme or parsed.netloc or not path.startswith("/") or path.startswith("//") or parsed.fragment:
-            raise ValueError("Only relative OpenRouter GET/POST paths are allowed")
+            raise ValueError("Only relative backend GET/POST paths are allowed")
+        if self.backend == "opencode" and (method != "POST" or path != "/chat/completions"):
+            raise ValueError("OpenCode transport only allows POST /chat/completions")
         if self.store.attempts_used >= self.max_requests:
             raise BudgetExceeded(f"HTTP attempt budget exhausted ({self.store.attempts_used}/{self.max_requests})")
         # Build/serialize before reservation: invalid local requests never reach the wire.
-        request = self._client.build_request(method, BASE_URL + path, json=json, params=params,
-            headers={"Authorization": f"Bearer {self.api_key}", "X-OpenRouter-Cache": "false"})
+        request_headers = ({"X-OpenRouter-Cache": "false"} if self.backend == "openrouter" else {
+            k: v for k, v in (headers or {}).items()
+            if k.lower() in {"user-agent", "x-opencode-session", "x-opencode-request",
+                             "x-opencode-client", "x-opencode-project"}})
+        logged_request = {"method": method, "path": path, "json": json, "params": params,
+                          "headers": request_headers}
+        if self.backend == "opencode":
+            logged_request.update(backend=self.backend, context_sha256=context_sha256)
+        request = self._client.build_request(method, self.base_url + path, json=json, params=params,
+            headers={**request_headers, "Authorization": f"Bearer {self.api_key or 'public'}"})
         if self._last_started is not None:
             wait = self.min_interval - (self.clock() - self._last_started)
             if wait > 0:
@@ -166,8 +248,7 @@ class BudgetedTransport:
             raise BudgetExceeded("HTTP attempt budget exhausted")
         aid = uuid.uuid4().hex
         self.store.append("attempt_started", attempt_id=aid,
-            request=_scrub({"method": method, "path": path, "json": json, "params": params,
-                            "headers": {"X-OpenRouter-Cache": "false"}}, self.api_key),
+            request=_scrub(logged_request, self.api_key),
             purpose=_scrub(purpose, self.api_key), probe_id=_scrub(probe_id, self.api_key),
             group_id=_scrub(group_id, self.api_key), logical_id=_scrub(logical_id, self.api_key),
             attempts_used=self.store.attempts_used + 1, max_requests=self.max_requests)
@@ -175,21 +256,40 @@ class BudgetedTransport:
         self._last_started = start
         result = AttemptResult(attempt_id=aid, method=method)
         try:
-            response = self._client.send(request, follow_redirects=False)
+            response = self._client.send(request, follow_redirects=False, stream=self.backend == "opencode")
             result.status_code = response.status_code
             result.headers = _scrub({k: v for k, v in response.headers.items()
                 if k in {"content-type", "retry-after", "x-generation-id", "x-request-id", "x-openrouter-cache"}
-                or k.startswith("x-openrouter-cache-") or k.startswith("x-ratelimit-")}, self.api_key)
+                or k.startswith("x-openrouter-cache-") or k.startswith("x-ratelimit-")
+                or k in {"x-opencode-endpoint-id", "x-opencode-upstream-model-id"}}, self.api_key)
             try:
-                result.data = _scrub(jsonlib.loads(response.content.decode("utf-8"), parse_constant=_reject_constant), self.api_key)
+                if self.backend == "opencode":
+                    raw = bytearray()
+                    try:
+                        for part in response.iter_bytes():
+                            raw.extend(part)
+                            if len(raw) > 2 * 1024 * 1024 or self.clock() - start > 60:
+                                raise httpx.ReadTimeout("OpenCode response exceeded size or duration limit", request=request)
+                    finally:
+                        result.data = {"raw_text": _scrub(raw.decode("utf-8", errors="replace"), self.api_key)}
+                    content = bytes(raw)
+                else:
+                    content = response.content
+                raw_text = content.decode("utf-8")
+                if self.backend == "opencode" and "text/event-stream" in response.headers.get("content-type", "").lower():
+                    result.data = {"raw_sse": _scrub(raw_text, self.api_key),
+                                   "chat": _scrub(parse_chat_sse(raw_text), self.api_key)}
+                else:
+                    result.data = _scrub(jsonlib.loads(raw_text, parse_constant=_reject_constant), self.api_key)
             except (ValueError, UnicodeError) as exc:
-                result.error = f"InvalidJSON: {type(exc).__name__}"
-                result.data = {"raw_text": _scrub(response.content.decode("utf-8", errors="replace"), self.api_key)}
+                result.error = f"InvalidResponse: {type(exc).__name__}" if self.backend == "opencode" else f"InvalidJSON: {type(exc).__name__}"
+                result.data = {"raw_text": _scrub(content.decode("utf-8", errors="replace"), self.api_key)}
+            finally:
+                response.close()
             if response.status_code >= 400 and result.error is None:
                 result.error = f"HTTP {response.status_code}"
             elif 300 <= response.status_code < 400:
                 result.error = f"Redirect refused: HTTP {response.status_code}"
-            response.close()
         except httpx.HTTPError as exc:
             result.error = _scrub(f"{type(exc).__name__}: {exc}", self.api_key)
             result.uncertain = method == "POST" and not isinstance(exc, (httpx.ConnectError, httpx.ConnectTimeout, httpx.PoolTimeout))
@@ -227,7 +327,7 @@ def retry_after_seconds(headers: dict[str, str]) -> float | None:
             return None
 
 
-def classify_retry(result: AttemptResult) -> bool:
+def classify_retry(result: AttemptResult, backend: str = "openrouter") -> bool:
     """Eligibility only: the runner must also enforce per-request and run limits."""
     if result.uncertain:
         return False
@@ -238,7 +338,7 @@ def classify_retry(result: AttemptResult) -> bool:
     if result.status_code == 429:
         text = jsonlib.dumps(result.data, ensure_ascii=False).lower()
         return not any(s in text for s in ("daily", "per day", "per-day", "requests/day"))
-    if result.status_code == 402 and isinstance(result.data, dict):
+    if backend == "openrouter" and result.status_code == 402 and isinstance(result.data, dict):
         error = result.data.get("error")
         metadata = error.get("metadata") if isinstance(error, dict) else None
         return isinstance(metadata, dict) and metadata.get("limit_source") == "openrouter_in_flight_budget"

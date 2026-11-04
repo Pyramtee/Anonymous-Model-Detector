@@ -1,7 +1,7 @@
 [project]
 name = "tokenizer-detector"
 version = "0.2.0"
-description = "Detect which known vendor tokenizer an anonymous OpenRouter model uses"
+description = "Detect which known vendor tokenizer an anonymous OpenRouter or OpenCode Zen model uses"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -31,4 +31,7 @@ packages = ["src/tokenizer_detector"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
-markers = ["integration: requires all pinned reference artifacts, never accesses the network"]
+markers = [
+    "integration: requires all pinned reference artifacts, never accesses the network",
+    "opencode_native: requires OpenCode v2, uses loopback and a mocked upstream only",
+]

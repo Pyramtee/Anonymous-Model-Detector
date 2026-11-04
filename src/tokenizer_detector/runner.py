@@ -13,9 +13,10 @@ from . import engine
 from .models import ALGORITHM_VERSION, SCHEMA_VERSION, Action, Observation, ProbeBank
 from .run_store import RunStore, RunStoreError, read_events
 from .report import write_reports
+from .opencode import READABLE_BRIDGE_VERSIONS, OpenCodeBackend, OpenCodeError, context_hash, request_context
 from .transport import (
     BudgetExceeded, BudgetedTransport, classify_retry, parse_chat_result,
-    retry_after_seconds,
+    parse_chat_sse, retry_after_seconds,
 )
 
 
@@ -27,10 +28,19 @@ class RunConfig:
     max_requests: int | None = None
     output_limit: int = 32
     min_interval: float = 3.1
+    backend: str = "openrouter"
 
     def __post_init__(self) -> None:
         if not self.model.strip():
             raise ValueError("model 不能为空")
+        if self.backend not in {"openrouter", "opencode"}:
+            raise ValueError("backend 必须为 openrouter 或 opencode")
+        if self.backend == "opencode":
+            self.model = self.model.removeprefix("opencode/").strip()
+            if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", self.model):
+                raise ValueError("OpenCode 模型需为 Zen model ID 或 opencode/<model-id>")
+            if self.provider is not None:
+                raise ValueError("--provider 仅适用于 OpenRouter；OpenCode 路由由 Zen 管理")
         if self.mode not in {"quick", "deep"}:
             raise ValueError("mode 必须为 quick 或 deep")
         if self.max_requests is None:
@@ -39,10 +49,26 @@ class RunConfig:
             raise ValueError("max_requests 必须为正整数")
 
 
-def _group(config: RunConfig, parsed: Any, output: bool) -> str:
+def _group(config: RunConfig, parsed: Any, output: bool, context_sha256: str | None = None) -> str:
     values = [config.model, config.provider, parsed.model, parsed.provider,
               config.output_limit if not output else 128, output]
+    if config.backend == "opencode":
+        values += [config.backend, context_sha256]
     return hashlib.sha256(json.dumps(values, ensure_ascii=False).encode()).hexdigest()[:20]
+
+
+def _parsed_response(data: Any, headers: dict, backend: str):
+    if backend == "opencode" and isinstance(data, dict) and "raw_sse" in data:
+        chat = parse_chat_sse(data["raw_sse"])
+        if chat != data.get("chat"):
+            raise ValueError("原始 SSE 与归一化响应不一致")
+        parsed = parse_chat_result(chat)
+    else:
+        parsed = parse_chat_result(data)
+    if backend == "opencode":
+        parsed.provider = headers.get("x-opencode-endpoint-id") or parsed.provider
+        parsed.model = headers.get("x-opencode-upstream-model-id") or parsed.model
+    return parsed
 
 
 def restore(events: list[dict[str, Any]]) -> tuple[Any, ProbeBank, RunConfig, str | None]:
@@ -65,14 +91,30 @@ def _restore_checked(events: list[dict[str, Any]]) -> tuple[Any, ProbeBank, RunC
     state = engine.new_state(bank, mode=config.mode)
     stop = None
     starts, finishes = {}, {}
+    native_ready, native_context = None, None
     known = {"attempt_started", "attempt_finished", "observation", "confirmation_frozen",
              "run_continued", "request_config_changed", "run_stopped", "action_decided",
-             "capability_unavailable", "invalid_observation"}
+             "capability_unavailable", "invalid_observation", "backend_initialized",
+             "request_context_frozen", "client_request_blocked"}
     for event in events[1:]:
         kind = event["type"]
         if kind not in known:
             raise RunStoreError(f"未知实验事件：{kind}")
         if kind == "attempt_started":
+            if config.backend == "opencode":
+                if native_ready is None or native_context is None:
+                    raise RunStoreError("OpenCode 请求缺少客户端版本或固定上下文")
+                request = event["request"]
+                probe = bank.probes[event["probe_id"]]
+                if (request.get("backend") != "opencode" or request.get("method") != "POST"
+                        or request.get("path") != "/chat/completions"
+                        or request.get("context_sha256") != native_context["context_sha256"]
+                        or request_context(request["json"], probe.text) != native_context["context"]
+                        or request["json"].get("model") != config.model
+                        or request["json"].get("max_tokens") != config.output_limit
+                        or request["json"].get("stream") is not True
+                        or event["purpose"] not in {"anchor", "selection", "confirmation"}):
+                    raise RunStoreError("OpenCode 请求与探针或固定上下文不一致")
             starts[event["attempt_id"]] = event
         elif kind == "attempt_finished":
             finishes[event["attempt_id"]] = event
@@ -86,9 +128,18 @@ def _restore_checked(events: list[dict[str, Any]]) -> tuple[Any, ProbeBank, RunC
                     or finish.get("status_code") != 200 or finish.get("error") or finish.get("uncertain")):
                 raise RunStoreError("观测与请求结果/探针/阶段不一致")
             request = start["request"]
-            if (request["method"] != "POST" or request["json"]["messages"] != [
+            if config.backend == "openrouter" and (request["method"] != "POST" or request["json"]["messages"] != [
                     {"role": "user", "content": bank.probes[data["probe_id"]].text}]):
                 raise RunStoreError("观测与实际发送文本不一致")
+            if config.backend == "opencode":
+                parsed = _parsed_response(finish["data"], finish.get("headers", {}), config.backend)
+                expected_valid = type(parsed.prompt_tokens) is int and parsed.prompt_tokens > 0
+                if (data["prompt_tokens"] != parsed.prompt_tokens or data["valid"] is not expected_valid
+                        or data.get("provider") != parsed.provider or data.get("actual_model") != parsed.model
+                        or data["group_id"] != _group(config, parsed, False, request["context_sha256"])
+                        or data.get("allowed_profiles") is not None
+                        or event.get("usage_source") != "response_usage"):
+                    raise RunStoreError("OpenCode 观测与原始响应不一致")
             if type(data["valid"]) is not bool or not isinstance(data["group_id"], str):
                 raise RunStoreError("观测的有效性/分组字段无效")
             if data.get("allowed_profiles") is not None:
@@ -101,11 +152,29 @@ def _restore_checked(events: list[dict[str, Any]]) -> tuple[Any, ProbeBank, RunC
         elif kind == "confirmation_frozen":
             state = engine.freeze_confirmation(state, bank)
         elif kind == "run_continued":
-            config = RunConfig(**event["config"])
+            continued = RunConfig(**event["config"])
+            if (continued.backend, continued.model, continued.provider) != (config.backend, config.model, config.provider):
+                raise RunStoreError("续跑改变了后端、模型或 provider")
+            config = continued
             state = engine.continue_state(state, mode=config.mode)
             stop = None
         elif kind == "request_config_changed":
-            config = RunConfig(**event["config"])
+            changed = RunConfig(**event["config"])
+            if (changed.backend, changed.model, changed.provider) != (config.backend, config.model, config.provider):
+                raise RunStoreError("请求配置改变了后端、模型或 provider")
+            config = changed
+        elif kind == "backend_initialized":
+            if (config.backend != "opencode" or native_ready is not None or event.get("backend") != "opencode"
+                    or event.get("bridge_version") not in READABLE_BRIDGE_VERSIONS
+                    or not isinstance(event.get("client_version"), str) or not event["client_version"]
+                    or not isinstance(event.get("runtime_dir"), str) or not Path(event["runtime_dir"]).is_absolute()):
+                raise RunStoreError("OpenCode 客户端元数据无效")
+            native_ready = event
+        elif kind == "request_context_frozen":
+            if (config.backend != "opencode" or native_ready is None or native_context is not None
+                    or context_hash(event["context"]) != event.get("context_sha256")):
+                raise RunStoreError("OpenCode 固定上下文无效")
+            native_context = event
         elif kind == "run_stopped":
             stop = event["stop_reason"]
     return state, bank, config, stop
@@ -142,6 +211,20 @@ def _report(state: Any, bank: ProbeBank, config: RunConfig,
                    (e.get("status_code") or 0) >= 400],
         "validation_scope": "结论限于已记录的观测与编码假设，不提供线上准确率或厂商概率",
     })
+    # Preserve the shape of historical OpenRouter reports.
+    if "backend" in events[0]["config"]:
+        result["backend"] = config.backend
+    if config.backend == "opencode":
+        ready = next((e for e in events if e["type"] == "backend_initialized"), {})
+        frozen = next((e for e in events if e["type"] == "request_context_frozen"), {})
+        result["opencode"] = {"client_version": ready.get("client_version"),
+                             "bridge_version": ready.get("bridge_version"),
+                             "runtime_dir": ready.get("runtime_dir"),
+                             "context_sha256": frozen.get("context_sha256"),
+                             "route_visibility": "limited_to_returned_metadata"}
+        result["channels"]["output_bytes"] = "unsupported"
+        result["client_errors"] = [{k: e.get(k) for k in ("reason", "detail")}
+                                   for e in events if e["type"] == "client_request_blocked"]
     return result
 
 
@@ -161,6 +244,8 @@ def _body(config: RunConfig, text: str, output: bool = False) -> dict[str, Any]:
     if output:
         body["logprobs"] = True
         body["provider"]["require_parameters"] = True
+    if config.backend == "opencode":
+        del body["provider"]
     return body
 
 
@@ -169,6 +254,7 @@ def execute_run(
     *, resume: bool = False, adapters: dict[str, Any] | None = None,
     client: Any = None, sleep: Callable[[float], None] = time.sleep,
     progress: Callable[[str], None] | None = None,
+    opencode_factory: Callable = OpenCodeBackend,
 ) -> dict[str, Any]:
     """Execute via an injected client in tests, or explicit live CLI invocation only."""
     log = progress or (lambda message: None)
@@ -177,8 +263,9 @@ def execute_run(
             state, old_bank, old_config, _ = restore(store.events)
             if old_bank.identity != bank.identity:
                 raise RunStoreError("参考/探针/运行版本发生变化，不能原地续跑")
-            if old_config.model != config.model or old_config.provider != config.provider:
-                raise RunStoreError("模型或 provider 设置变化，请创建新实验")
+            if (old_config.model != config.model or old_config.provider != config.provider
+                    or old_config.backend != config.backend):
+                raise RunStoreError("后端、模型或 provider 设置变化，请创建新实验")
             if config.max_requests <= store.attempts_used:
                 raise RunStoreError("新累计预算必须大于已使用尝试数")
             config.output_limit = old_config.output_limit
@@ -190,15 +277,20 @@ def execute_run(
                          experiment_id=path.name,
                          bank=bank.to_dict())
             state = engine.new_state(bank, mode=config.mode)
-        transport = BudgetedTransport(store, api_key, config.max_requests,
-                                      client=client, min_interval=config.min_interval,
-                                      sleep=sleep)
+        transport = None
         reason = "insufficient_evidence"
         output_attempts = sum(e["type"] == "attempt_started" and
                               e.get("purpose") in {"output", "output_confirmation"}
                               for e in store.events)
         output_started = output_attempts > 0
         try:
+            if config.backend == "opencode":
+                transport = opencode_factory(store, api_key, config.max_requests,
+                    model=config.model, output_limit=config.output_limit, client=client,
+                    min_interval=config.min_interval, sleep=sleep)
+            else:
+                transport = BudgetedTransport(store, api_key, config.max_requests,
+                    client=client, min_interval=config.min_interval, sleep=sleep)
             while True:
                 remaining = config.max_requests - store.attempts_used
                 action = engine.next_action(state, bank, remaining)
@@ -210,7 +302,7 @@ def execute_run(
                 if action.kind == "stop":
                     current = engine.conclude(state, stop_reason=action.reason)
                     if (config.mode == "deep" and current.status == "ambiguous"
-                            and adapters and not output_started and remaining >= 3):
+                            and config.backend == "openrouter" and adapters and not output_started and remaining >= 3):
                         outputs = sorted((p for p in bank.probes.values() if p.split == "output"),
                                          key=lambda p: p.probe_id)
                         if len(outputs) >= 3:
@@ -240,7 +332,7 @@ def execute_run(
                     result = transport.send("POST", "/chat/completions", json=body,
                         purpose=action.phase, probe_id=probe_id,
                         logical_id=f"{probe_id}:{store.attempts_used}")
-                    if (classify_retry(result) and config.max_requests - store.attempts_used > 3
+                    if (classify_retry(result, config.backend) and config.max_requests - store.attempts_used > 3
                             and (not output or output_attempts < 4)):
                         delay = retry_after_seconds(result.headers)
                         if delay is not None and delay > 30:
@@ -253,7 +345,7 @@ def execute_run(
                             purpose=action.phase, probe_id=probe_id,
                             logical_id=f"retry:{result.attempt_id}")
                     # A declared minimum may be honored once, with a finite upper bound.
-                    if not output and result.status_code in {400, 422}:
+                    if config.backend == "openrouter" and not output and result.status_code in {400, 422}:
                         error_text = json.dumps(result.data, ensure_ascii=False).lower()
                         minimum = re.search(r"(?:minimum|min value|at least|>=)\D{0,15}(\d+)", error_text)
                         if ("max_tokens" in error_text and minimum and
@@ -276,17 +368,17 @@ def execute_run(
                         stopped = True
                         break
                     try:
-                        parsed = parse_chat_result(result.data)
+                        parsed = _parsed_response(result.data, result.headers, config.backend)
                     except (ValueError, TypeError) as exc:
                         reason, stopped = "invalid_response", True
                         store.append("invalid_observation", attempt_id=result.attempt_id,
                                      reason=str(exc))
                         break
                     # A native-only generation lookup is a budgeted diagnostic, never an estimate.
-                    cache_hit = any(k.lower().startswith("x-openrouter-cache") and str(v).lower() == "hit"
+                    cache_hit = config.backend == "openrouter" and any(k.lower().startswith("x-openrouter-cache") and str(v).lower() == "hit"
                                     for k, v in result.headers.items())
                     usage_source = "response_usage"
-                    if (not output and not cache_hit and (parsed.prompt_tokens is None or parsed.prompt_tokens <= 0)
+                    if (config.backend == "openrouter" and not output and not cache_hit and (parsed.prompt_tokens is None or parsed.prompt_tokens <= 0)
                             and parsed.generation_id):
                         if config.max_requests - store.attempts_used > 2:
                             diag = transport.send("GET", "/generation",
@@ -323,7 +415,7 @@ def execute_run(
                         valid = not cache_hit
                     observation = Observation(
                         attempt_id=result.attempt_id, probe_id=probe_id,
-                        group_id=_group(config, parsed, output), phase=action.phase,
+                        group_id=_group(config, parsed, output, getattr(transport, "context_sha256", None)), phase=action.phase,
                         prompt_tokens=parsed.prompt_tokens, provider=parsed.provider,
                         actual_model=parsed.model, valid=valid,
                         reason=None if valid else "missing_native_usage",
@@ -338,10 +430,14 @@ def execute_run(
                     break
         except BudgetExceeded:
             reason = "budget_exhausted"
+        except OpenCodeError as exc:
+            reason = exc.reason
+            store.append("client_request_blocked", reason=exc.reason, detail=str(exc))
         except KeyboardInterrupt:
             reason = "interrupted"
         finally:
-            transport.close()
+            if transport is not None:
+                transport.close()
         store.append("run_stopped", stop_reason=reason)
         result = _report(state, bank, config, store.events, reason)
         # Keep derived reports under the same lock as their journal snapshot.

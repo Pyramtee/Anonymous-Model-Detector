@@ -21,6 +21,11 @@ def render_markdown(payload: dict[str, Any]) -> str:
              f"停止原因：`{payload.get('stop_reason', '—')}`", "",
              f"HTTP 尝试：{budget.get('used', 0)} / {budget.get('limit', '—')}", "",
              "候选与编码假设：", ""]
+    if payload.get("backend"):
+        lines[4:4] = [f"后端：`{payload['backend']}`", ""]
+    if payload.get("opencode"):
+        info = payload["opencode"]
+        lines[4:4] = [f"OpenCode 客户端：`{info.get('client_version', '—')}`；固定上下文：`{info.get('context_sha256') or '未建立'}`", ""]
     candidates = payload.get("candidates", [])
     if not candidates:
         lines += ["没有已建立兼容关系的候选；这不自动证明存在新的 tokenizer。", ""]

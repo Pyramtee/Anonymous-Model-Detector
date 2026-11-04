@@ -494,7 +494,8 @@ def conclude(state: InferenceState, stop_reason: str | None = None) -> Conclusio
     status = "insufficient_evidence"
     if not state.bank.profiles:
         status = "reference_unavailable"
-    elif _unstable(state) or reason in {"unstable_endpoint", "output_route_changed"}:
+    elif _unstable(state) or reason in {"unstable_endpoint", "output_route_changed",
+                                      "opencode_context_changed", "opencode_version_changed"}:
         status = "unstable_endpoint"
     elif (not fits and _selection_text_count(state) >= 3 and len(_anchors(state)) >= 2
           and (not _survivors(state, include_output=False) or complete)):
@@ -508,7 +509,9 @@ def conclude(state: InferenceState, stop_reason: str | None = None) -> Conclusio
         # ambiguity when it has supplied no new family exclusion.
         status, complete, confirmed_source = "ambiguous", True, "input"
     elif reason in {"request_failed", "invalid_response", "outcome_unknown",
-                    "retry_after_exceeds_wait_limit"}:
+                    "retry_after_exceeds_wait_limit", "opencode_unavailable", "opencode_runtime_missing",
+                    "opencode_client_failed", "opencode_timeout", "opencode_unsupported_version",
+                    "unexpected_client_request"}:
         status = "request_failed"
     candidates = []
     for family in sorted(families):

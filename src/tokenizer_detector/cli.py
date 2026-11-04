@@ -90,8 +90,11 @@ def fingerprint(
     except (ValueError, RuntimeError, OSError) as exc:
         _fail(exc)
 
-def _key(value: str | None) -> str:
+def _key(value: str | None, backend: str = "openrouter") -> str:
     load_dotenv()
+    if backend == "opencode":
+        key = value or os.environ.get("OPENCODE_API_KEY", "")
+        return "" if key == "public" else key
     key = value or os.environ.get("OPENROUTER_API_KEY", "")
     if not key:
         raise ValueError("需要 OPENROUTER_API_KEY；fingerprint 和 replay 不需要凭证")
@@ -106,6 +109,7 @@ def _finish(path: Path, result: dict, output: Path | None) -> None:
 @app.command()
 def detect(
     model: str = typer.Option(..., "--model"),
+    backend: str = typer.Option("openrouter", "--backend", help="openrouter 或 opencode（本机 Zen 客户端）"),
     mode: str = typer.Option("quick", "--mode", help="quick 或 deep"),
     provider: Optional[str] = typer.Option(None, "--provider", help="精确 endpoint slug"),
     api_key: Optional[str] = typer.Option(None, "--api-key"),
@@ -122,9 +126,9 @@ def detect(
     if max_calls is not None or unknown_threshold is not None or no_completion:
         _fail(ValueError("旧评分参数已取消；--max-calls 请改为 --max-requests（包含重试与诊断）。"))
     try:
-        config = RunConfig(model=model, mode=mode, provider=provider, max_requests=max_requests)
+        config = RunConfig(model=model, mode=mode, provider=provider, max_requests=max_requests, backend=backend)
         adapters, bank = _references(manifest, artifacts)
-        key = _key(api_key)
+        key = _key(api_key, backend) if backend == "opencode" else _key(api_key)
         directory = run_dir or PROJECT_ROOT / "data/runs" / (datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-" + uuid.uuid4().hex[:8])
         result = execute_run(directory, bank, config, key, adapters=adapters,
                              progress=lambda x: console.print(x, markup=False))
@@ -150,8 +154,10 @@ def resume(
     try:
         _, _, old, _ = restore(read_events(run))
         adapters, bank = _references(manifest, artifacts)
-        config = RunConfig(model=old.model, provider=old.provider, mode=mode, max_requests=max_requests, output_limit=old.output_limit)
-        result = execute_run(run, bank, config, _key(api_key), resume=True,
+        config = RunConfig(model=old.model, provider=old.provider, mode=mode, max_requests=max_requests,
+                           output_limit=old.output_limit, min_interval=old.min_interval, backend=old.backend)
+        key = _key(api_key, old.backend) if old.backend == "opencode" else _key(api_key)
+        result = execute_run(run, bank, config, key, resume=True,
                              adapters=adapters, progress=lambda x: console.print(x, markup=False))
         _finish(run, result, output)
     except (ValueError, RuntimeError, OSError) as exc:

@@ -46,12 +46,22 @@
 
 ## 命令与兼容性
 
+### OpenCode Zen 后端
+
+`detect --backend opencode` 使用真实 OpenCode v2 的 `opencode run --standalone --format json`，每次私有服务、新建会话，探针以原始 UTF-8 标准输入传入。规范化客户端版本，在线拒绝 v1；已知 v1/v2 桥接记录均可离线回放，但不能跨客户端或桥接版本续跑。`--backend` 缺省为 OpenRouter；旧 v2 日志缺省后端亦为 OpenRouter，保留历史回放报告结构。`resume` 从日志恢复后端，不允许切换后端、模型或 provider。
+
+`opencode` 模块管理独立工作目录、PWD、OpenCode home、临时目录与 XDG 配置/数据/缓存/状态，并启动仅监听 loopback 的随机路径桥接。原生 v2 配置关闭辅助请求，使用 `@opencode/ai/providers/openai-compatible` 与 `compatibility.maxTokensField: "max_tokens"`。实际请求保持客户端系统提示、工具定义、固定消息与身份头；转发只允许 `https://opencode.ai/inference/v1/chat/completions`。发送前走统一的持久预算、节流和 fsync。客户端额外请求不转发；重试统一由 runner 控制。桥接向客户端返回不含工具调用的固定 SSE 结束响应，检测器仅使用真实上游结果。网络 POST 超时仍保守记录为结果未知。
+
+首个请求将唯一 user 文本替换为占位符后冻结完整请求上下文及 SHA-256。后续请求、续跑和离线回放都检查原始探针与上下文，不能通过重新分组吸收变化。日志新增可选 `backend_initialized`、`request_context_frozen`、`client_request_blocked` 事件，保留原始 SSE 与归一化响应并在回放时交叉核验计数、路由和实验组。API Key 和本地配置内容不写入日志。
+
+客户端版本或固定上下文（含工作目录、日期、工具定义）变化为不稳定；运行目录缺失要求新实验。此后端只实现输入计数通道，不调用 OpenRouter generation 诊断，不使用客户端统计替代原始 usage，不从 prompt_tokens 中扣除缓存 tokens。deep 模式保持累计预算但不启动输出字节探针。服务端未暴露底层路由时明确记录可见性限制。
+
 `fetch/list/detect` 保留；增加 `fingerprint/resume/replay`。旧 confidence/S1/S2/S3 和阈值接口取消，旧参数给迁移提示。CLI不在导入时读取.env。环境变量优先于.env，仅有联网意图的命令加载凭证。
 
 旧校准记录保留为历史材料，不进入新算法；旧线上校准脚本停用。旧报告因缺少原始实际文本，不支持伪造迁移为v2回放记录。同版本回放必须产生相同结论；版本不兼容时拒绝原地续跑，保留历史数据。
 
 ## 验收
 
-单元测试使用手写计数矩阵和 HTTP MockTransport；集成测试要求完整十份工件，缺失明确失败。静态 golden 使用独立官方加载路径产生，测试运行时不重写期望值。所有测试默认封锁 socket 网络。
+单元测试使用手写计数矩阵和 HTTP MockTransport；参考集成测试要求完整十份工件，缺失明确失败。`opencode_native` 测试调用真实 v2 客户端，覆盖完整检测、复杂文本、运行隔离、同版本续跑及回放，上游始终使用 MockTransport；缺少 v2 客户端时明确跳过。静态 golden 使用独立官方加载路径产生，测试运行时不重写期望值。所有测试默认封锁 Python socket 出站连接；真实客户端仅连接本地桥接，关闭模型下载。
 
 验收覆盖：参考哈希/策略/ID、外部对照、共享词表、确认隔离、模板反例、缺失usage与缓存、路由漂移、非规范生成切分、12/40预算、日志失败/崩溃/锁、CLI迁移、续跑和无凭证回放。离线结果不宣称为线上识别准确率。
