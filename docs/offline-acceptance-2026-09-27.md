@@ -67,16 +67,18 @@
 
 ## 本地交付与复现
 
-完整指纹矩阵与组件差异：`data/cache/fingerprint-v2.json`。
+以下命令和路径记录的是验收当时在验收机上的本地产物。`data/cache/` 与 `data/runs/` 都不纳入 Git，**克隆仓库后这些具体文件（含下面 20 个实验目录、指纹矩阵和汇总 JSON）并不存在**，需要自行重新生成；不要把它们当成随仓库附带、拿过来就能直接回放的文件。
 
-本轮20个可回放实验：`data/runs/offline-acceptance-20260926T173626Z/`。目录名使用UTC，对应本地2026-09-27。汇总：[offline-acceptance.json](../data/cache/offline-acceptance.json)。这些文件属于项目本地缓存/实验，不纳入Git。
+完整指纹矩阵与组件差异（验收当时）：`data/cache/fingerprint-v2.json`。下方"重跑验收"里的 `fingerprint` 命令可离线重建该文件（需要参考工件已 `fetch` 到本地，但不需要凭证，也不发网络请求）。
 
-可直接进行无需凭证的回放：
+本轮 20 个可回放实验（验收当时）：`data/runs/offline-acceptance-20260926T173626Z/`，目录名使用 UTC，对应本地 2026-09-27；汇总为 `data/cache/offline-acceptance.json`。仓库**没有一键重建这批实验目录的入口**：它们由验收时用 `execute_run` 注入 `httpx.MockTransport` 生成，未随仓库分发。`replay` 需要一个已存在的完整实验目录，因此下面这条命令只有在本地确实生成了对应目录后才成立（它是验收机上的复现记录，不是对新克隆仓库可直接执行的命令）：
 
 ```bash
 uv run --offline --extra dev tokenizer-detector replay \
   data/runs/offline-acceptance-20260926T173626Z/step5--plain
 ```
+
+回放链路本身由测试套件覆盖：`pytest` 会用 MockTransport 生成完整的 `events.jsonl` 并验证 `replay` 逐字段一致（见 `test_pinned_detection.py`、`test_runner.py`）。若需要一份可长期保存、可离线回放的实验目录，需自行调用 `execute_run` 并注入 MockTransport；直接对新克隆的仓库执行上面的 `replay` 会因目录不存在而报错。
 
 准备好依赖和全部参考后重跑验收：
 

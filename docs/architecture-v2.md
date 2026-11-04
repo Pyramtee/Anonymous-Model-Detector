@@ -1,6 +1,6 @@
 # TokenizerDetector v2 实施架构
 
-本文件落实用户批准的架构计划。冻结参考集为 2026-09-26 核查版本；Step5 镜像按用户认可的可信来源处理。代码在项目内通过 `uv run` 使用，面向当前 Linux/WSL 环境。准备公开 tokenizer 文件不需要模型权重；检测与下载是不同命令。本轮验收不运行真实 OpenRouter 请求。
+本文件落实用户批准的架构计划。冻结参考集为 2026-09-26 核查版本；Step5 镜像按用户认可的可信来源处理。代码在项目内通过 `uv run` 使用，面向 Linux/WSL，另在 macOS 上实测通过；原生 Windows 因缺少 `fcntl` 不受支持。项目根目录由包路径 `parents[2]` 推导，参考清单、工件、缓存和 `.env` 都从仓库内的 `data/` 读取，因此只支持源码目录内运行（editable 安装），不支持把 wheel 装到 site-packages 后全局调用。准备公开 tokenizer 文件不需要模型权重；检测与下载是不同命令。本轮验收不运行真实 OpenRouter 请求。
 
 ## 职责和依赖
 
